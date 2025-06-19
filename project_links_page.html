@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Projects</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+    .card {
+      background-color: #1e1e1e;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .card h2 {
+      margin-top: 0;
+      color: #ffffff;
+    }
+    .card p {
+      flex-grow: 1;
+    }
+    .card a,
+    .card button {
+      text-decoration: none;
+      padding: 0.6rem 1rem;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-weight: bold;
+      text-align: center;
+    }
+    .card a {
+      background-color: #00bcd4;
+      color: #121212;
+    }
+    .card button {
+      background-color: #555;
+      color: #999;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <h1>My Projects</h1>
+  <div class="grid">
+    <div class="card">
+      <h2>Bad encryption</h2>
+      <p>A not-so-good encryption script I made originally in python which was converted to javascript by ChatGPT 🤑</p>
+      <a href="https://kmanb44.github.io/bad-encryption" target="_blank">Check it out</a>
+    </div>
+
+    <div class="card">
+      <h2>More coming soon</h2>
+      <p>Stay tuned for upcoming projects and experiments. Exciting stuff is on the way!</p>
+      <button disabled>Coming Soon</button>
+    </div>
+  </div>
+</body>
+</html>
