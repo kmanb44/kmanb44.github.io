@@ -36,7 +36,7 @@ def main():
     amount = int(amount_str)
 
     # Prepare folder
-    folder_name = query.replace(" ", "")
+    folder_name = query.replace(" ", "-")
     assets_dir = os.path.join(os.getcwd(), "assets", folder_name)
     
     if not os.path.exists(assets_dir):

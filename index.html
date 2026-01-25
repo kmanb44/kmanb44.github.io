@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub File Manager</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #000000;
+            --border-color: #ccc;
+            --highlight: #f0f0f0;
+            --link-color: #0000EE;
+        }
+
+        body {
+            font-family: "Courier New", Courier, monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        h1, h2, h3 {
+            font-weight: bold;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--text-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        a {
+            color: var(--link-color);
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        
+        a:hover {
+            background-color: var(--highlight);
+        }
+
+        .container {
+            border: 1px solid var(--border-color);
+            padding: 20px;
+        }
+
+        input[type="text"], input[type="password"] {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            font-family: inherit;
+            border: 1px solid var(--text-color);
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #eee;
+            border: 2px solid #000;
+            color: #000;
+            padding: 10px 20px;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        button:hover {
+            background-color: #ddd;
+        }
+
+        button:active {
+            background-color: #000;
+            color: #fff;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        #file-list {
+            list-style-type: none;
+            padding: 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        #file-list li {
+            padding: 10px 5px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        #file-list li:hover {
+            background-color: var(--highlight);
+        }
+
+        .file-name {
+            flex-grow: 1;
+        }
+
+        .file-actions button {
+            padding: 2px 5px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+
+        .breadcrumbs {
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .breadcrumbs span {
+            margin-right: 5px;
+        }
+
+        #upload-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid var(--text-color);
+        }
+
+        .disclaimer {
+            font-size: 0.8em;
+            color: #555;
+            margin-top: 20px;
+            border-top: 1px dashed #ccc;
+            padding-top: 10px;
+        }
+
+        .error-message {
+            color: red;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>GH File Manager v1.0</h1>
+
+    <div id="login-screen" class="container">
+        <h2>Authentication</h2>
+        <div id="login-error" class="error-message hidden"></div>
+        <p>Enter your GitHub credentials to manage files.</p>
+        
+        <label for="gh-token">Personal Access Token:</label>
+        <input type="password" id="gh-token" placeholder="github_pat_..." autocomplete="off">
+        
+        <label for="gh-owner">Repository Owner:</label>
+        <input type="text" id="gh-owner" placeholder="kmanb44">
+        
+        <label for="gh-repo">Repository Name:</label>
+        <input type="text" id="gh-repo" placeholder="kmanb44.github.io">
+        
+        <button onclick="app.login()">Connect</button>
+        
+        <div class="disclaimer">
+            <strong>SECURITY NOTE:</strong> Please use a <em>Fine-grained Personal Access Token</em> scoped only to "Contents: Read & Write" for this specific public repository. 
+            Credentials are saved in browser Session Storage and are cleared when the tab is closed.
+        </div>
+    </div>
+
+    <div id="main-screen" class="container hidden">
+        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <div id="repo-info">Connected: <strong>Owner/Repo</strong></div>
+            <button onclick="app.logout()" style="padding: 5px 10px; font-size: 0.8em;">Logout</button>
+        </div>
+        
+        <hr>
+
+        <div class="breadcrumbs" id="breadcrumbs">
+            <!-- Breadcrumbs injected here -->
+        </div>
+
+        <ul id="file-list">
+            <!-- Files injected here -->
+            <li>Loading...</li>
+        </ul>
+
+        <div id="upload-section">
+            <h3>Upload File</h3>
+            <input type="file" id="file-input">
+            <input type="text" id="upload-path" placeholder="Optional: subfolder/filename.txt (defaults to file name)">
+            <button onclick="app.uploadFile()">Upload</button>
+            <div id="upload-status"></div>
+        </div>
+    </div>
+
+<script>
+    const app = {
+        state: {
+            token: null,
+            owner: null,
+            repo: null,
+            currentPath: ''
+        },
+
+        init: function() {
+            const token = sessionStorage.getItem('gh_token');
+            const owner = sessionStorage.getItem('gh_owner');
+            const repo = sessionStorage.getItem('gh_repo');
+
+            if (token && owner && repo) {
+                this.state.token = token;
+                this.state.owner = owner;
+                this.state.repo = repo;
+                this.showMainScreen();
+                this.fetchFiles('');
+            }
+        },
+
+        login: function() {
+            const token = document.getElementById('gh-token').value.trim();
+            const owner = document.getElementById('gh-owner').value.trim();
+            const repo = document.getElementById('gh-repo').value.trim();
+
+            if (!token || !owner || !repo) {
+                this.showError('All fields are required.');
+                return;
+            }
+
+            sessionStorage.setItem('gh_token', token);
+            sessionStorage.setItem('gh_owner', owner);
+            sessionStorage.setItem('gh_repo', repo);
+
+            this.state.token = token;
+            this.state.owner = owner;
+            this.state.repo = repo;
+            
+            this.showError(''); // Clear errors
+            this.showMainScreen();
+            this.fetchFiles('');
+        },
+
+        logout: function() {
+            sessionStorage.clear();
+            location.reload();
+        },
+
+        showError: function(msg) {
+            const errDiv = document.getElementById('login-error');
+            if (msg) {
+                errDiv.textContent = msg;
+                errDiv.classList.remove('hidden');
+            } else {
+                errDiv.classList.add('hidden');
+            }
+        },
+
+        showMainScreen: function() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('main-screen').classList.remove('hidden');
+            document.getElementById('repo-info').innerHTML = `Connected: <strong>${this.state.owner}/${this.state.repo}</strong>`;
+        },
+
+        updateBreadcrumbs: function(path) {
+            const container = document.getElementById('breadcrumbs');
+            container.innerHTML = '';
+            
+            // Root
+            const rootLink = document.createElement('a');
+            rootLink.textContent = 'root';
+            rootLink.onclick = () => this.fetchFiles('');
+            container.appendChild(rootLink);
+            container.appendChild(document.createTextNode(' / '));
+
+            if (!path) {
+                this.state.currentPath = '';
+                return;
+            }
+
+            this.state.currentPath = path;
+            const parts = path.split('/');
+            let currentBuild = '';
+            
+            parts.forEach((part, index) => {
+                currentBuild += (index > 0 ? '/' : '') + part;
+                const partLink = document.createElement('a');
+                partLink.textContent = part;
+                const pathRef = currentBuild; // Closure capture
+                partLink.onclick = () => this.fetchFiles(pathRef);
+                container.appendChild(partLink);
+                if (index < parts.length - 1) {
+                    container.appendChild(document.createTextNode(' / '));
+                }
+            });
+        },
+
+        fetchFiles: async function(path) {
+            this.updateBreadcrumbs(path);
+            const listEl = document.getElementById('file-list');
+            listEl.innerHTML = '<li>Loading...</li>';
+
+            try {
+                const url = `https://api.github.com/repos/${this.state.owner}/${this.state.repo}/contents/${path}`;
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${this.state.token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status} ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                this.renderList(data);
+            } catch (error) {
+                console.error(error);
+                listEl.innerHTML = `<li style="color: red;">Error: ${error.message}</li>`;
+                if (error.message.includes('401') || error.message.includes('403')) {
+                    alert('Authentication failed. Please check your token.');
+                    this.logout();
+                }
+            }
+        },
+
+        renderList: function(data) {
+            const listEl = document.getElementById('file-list');
+            listEl.innerHTML = '';
+
+            // Sort: Directories first, then files
+            data.sort((a, b) => {
+                if (a.type === b.type) return a.name.localeCompare(b.name);
+                return a.type === 'dir' ? -1 : 1;
+            });
+
+            if (this.state.currentPath !== '') {
+                 const parentPath = this.state.currentPath.substring(0, this.state.currentPath.lastIndexOf('/'));
+                 // If lastIndexOf is -1 (top level file in folder), parentPath becomes empty string, which is correct for root
+                 const li = document.createElement('li');
+                 li.innerHTML = `<a onclick="app.fetchFiles('${parentPath}')">.. [Up]</a>`;
+                 listEl.appendChild(li);
+            }
+
+            if (data.length === 0) {
+                listEl.innerHTML = '<li>No files found.</li>';
+                return;
+            }
+
+            data.forEach(item => {
+                const li = document.createElement('li');
+                const isDir = item.type === 'dir';
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'file-name';
+                
+                if (isDir) {
+                    const link = document.createElement('a');
+                    link.textContent = `[DIR] ${item.name}`;
+                    link.onclick = () => this.fetchFiles(item.path);
+                    nameSpan.appendChild(link);
+                } else {
+                    nameSpan.textContent = item.name;
+                }
+
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'file-actions';
+
+                if (!isDir) {
+                    const viewBtn = document.createElement('button');
+                    viewBtn.textContent = 'View';
+                    viewBtn.onclick = () => window.open(item.html_url, '_blank');
+                    actionsDiv.appendChild(viewBtn);
+
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.textContent = 'Del';
+                    deleteBtn.onclick = () => this.deleteFile(item.path, item.sha);
+                    actionsDiv.appendChild(deleteBtn);
+                }
+
+                li.appendChild(nameSpan);
+                li.appendChild(actionsDiv);
+                listEl.appendChild(li);
+            });
+        },
+
+        uploadFile: async function() {
+            const fileInput = document.getElementById('file-input');
+            const customPathInput = document.getElementById('upload-path');
+            const statusDiv = document.getElementById('upload-status');
+
+            if (fileInput.files.length === 0) {
+                alert('Please select a file.');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            // Determine path
+            let targetPath = customPathInput.value.trim();
+            if (!targetPath) {
+                // If in a subdirectory, append filename to current path
+                if (this.state.currentPath) {
+                    targetPath = `${this.state.currentPath}/${file.name}`;
+                } else {
+                    targetPath = file.name;
+                }
+            } else {
+                // Remove leading slash if present
+                 if(targetPath.startsWith('/')) targetPath = targetPath.substring(1);
+            }
+
+            statusDiv.textContent = 'Reading file...';
+
+            reader.onload = async (e) => {
+                statusDiv.textContent = 'Uploading...';
+                // Remove 'data:*/*;base64,' prefix
+                const contentBase64 = e.target.result.split(',')[1];
+                
+                try {
+                    const url = `https://api.github.com/repos/${this.state.owner}/${this.state.repo}/contents/${targetPath}`;
+                    
+                    const body = {
+                        message: `Upload ${file.name} via GH File Manager`,
+                        content: contentBase64
+                    };
+
+                    const response = await fetch(url, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${this.state.token}`,
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/vnd.github.v3+json'
+                        },
+                        body: JSON.stringify(body)
+                    });
+
+                    if (!response.ok) {
+                        const errData = await response.json();
+                        throw new Error(errData.message || response.statusText);
+                    }
+
+                    statusDiv.textContent = 'Upload successful!';
+                    fileInput.value = ''; // Reset
+                    customPathInput.value = '';
+                    this.fetchFiles(this.state.currentPath); // Refresh list
+                    setTimeout(() => statusDiv.textContent = '', 3000);
+
+                } catch (error) {
+                    console.error(error);
+                    statusDiv.innerHTML = `<span style="color:red">Error: ${error.message}</span>`;
+                }
+            };
+
+            reader.readAsDataURL(file);
+        },
+
+        deleteFile: async function(path, sha) {
+            if (!confirm(`Are you sure you want to delete ${path}?`)) return;
+
+            try {
+                const url = `https://api.github.com/repos/${this.state.owner}/${this.state.repo}/contents/${path}`;
+                const body = {
+                    message: `Delete ${path} via GH File Manager`,
+                    sha: sha
+                };
+
+                const response = await fetch(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${this.state.token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify(body)
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json();
+                    throw new Error(errData.message || response.statusText);
+                }
+
+                this.fetchFiles(this.state.currentPath); // Refresh
+
+            } catch (error) {
+                alert(`Delete failed: ${error.message}`);
+            }
+        }
+    };
+
+    // Initialize on load
+    app.init();
+</script>
+</body>
+</html>
