@@ -35,9 +35,15 @@ def main():
         return
     amount = int(amount_str)
 
+    dump_num_str = input("dump_num: ").strip()
+    if not dump_num_str.isdigit():
+        print("dump_num must be a number.")
+        return
+    dump_num = int(dump_num_str)
+
     # Prepare folder
     folder_name = query.replace(" ", "-")
-    assets_dir = os.path.join(os.getcwd(), "assets", folder_name)
+    assets_dir = os.path.join(os.getcwd(), "assets", folder_name, f"dump_{dump_num}")
     
     if not os.path.exists(assets_dir):
         os.makedirs(assets_dir)
