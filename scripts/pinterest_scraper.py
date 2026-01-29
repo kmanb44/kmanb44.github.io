@@ -44,6 +44,17 @@ def main():
     # Prepare folder
     folder_name = query.replace(" ", "-")
     assets_dir = os.path.join(os.getcwd(), "assets", folder_name, f"dump_{dump_num}")
+
+    skip_count = 0
+    if dump_num > 1:
+        for i in range(1, dump_num):
+            prev_dir = os.path.join(os.getcwd(), "assets", folder_name, f"dump_{i}")
+            if os.path.exists(prev_dir):
+                files = [f for f in os.listdir(prev_dir) if os.path.isfile(os.path.join(prev_dir, f)) and not f.startswith('.')]
+                skip_count += len(files)
+    
+    if skip_count > 0:
+        print(f"Skipping first {skip_count} images from previous dumps...")
     
     if not os.path.exists(assets_dir):
         os.makedirs(assets_dir)
@@ -52,7 +63,7 @@ def main():
         print(f"Using existing directory: {assets_dir}")
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True) # Headless=True as requested by user to avoid visual interference
+        browser = p.chromium.launch(headless=False) # headless controls whether the browser is visible or not
         page = browser.new_page()
         
         search_url = f"https://www.pinterest.com/search/pins/?q={query}"
@@ -61,6 +72,8 @@ def main():
 
         # Collect image URLs
         image_urls = set()
+        seen_urls = set()
+        skipped_count = 0
         print("Scraping images...")
         
         last_height = page.evaluate("document.body.scrollHeight")
@@ -84,9 +97,20 @@ def main():
                 try:
                     src = img.get_attribute("src")
                     if src and "pinimg.com" in src:
+                        if src in seen_urls:
+                            continue
+
                         # Check size
                         box = img.bounding_box()
                         if box and box['width'] > 75 and box['height'] > 75:
+                            seen_urls.add(src)
+
+                            if skipped_count < skip_count:
+                                skipped_count += 1
+                                if skipped_count % 50 == 0:
+                                    print(f"Skipped {skipped_count}/{skip_count} images...", end='\r')
+                                continue
+
                             # Try to upgrade quality if possible. 
                             # Pinimg typically has /236x/ or /474x/ etc. 
                             # Replacing with /originals/ often works but not always.
