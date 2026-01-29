@@ -52,7 +52,7 @@ def main():
         print(f"Using existing directory: {assets_dir}")
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False) # Headless=False to see what's happening, often better for scrapers
+        browser = p.chromium.launch(headless=True) # Headless=True as requested by user to avoid visual interference
         page = browser.new_page()
         
         search_url = f"https://www.pinterest.com/search/pins/?q={query}"
