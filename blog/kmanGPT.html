@@ -443,6 +443,7 @@
                 allPosts = await response.json();
                 renderTags();
                 renderPosts();
+                handleHashLink();
             } catch (error) {
                 console.error(error);
                 document.getElementById('posts-list').innerHTML = `<p style="text-align: center; color: #ef4444;">Error: ${error.message}</p>`;
@@ -563,7 +564,12 @@
                 card.innerHTML = `
                     <div class="post-header">
                         <div class="post-tags">${formattedTags}</div>
-                        <div class="post-date">${post.date}</div>
+                        <div class="post-date" style="display: flex; align-items: center; gap: 10px;">
+                            <span>${post.date}</span>
+                            <button class="share-btn" onclick="sharePost('${post.id}', this)" style="background: none; border: 1px solid rgba(0, 229, 255, 0.2); color: var(--cf-orange); cursor: pointer; font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; transition: all 0.2s; font-family: inherit;">
+                                🔗 Share
+                            </button>
+                        </div>
                     </div>
                     <h2 class="post-title">${post.title}</h2>
                     <div class="post-subtitle">${post.subtitle || ''}</div>
@@ -574,6 +580,39 @@
                 `;
                 postsList.appendChild(card);
             });
+        }
+
+        function sharePost(id, btn) {
+            const shareUrl = `${window.location.origin}${window.location.pathname}#post-${id}`;
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✅ Copied!';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+
+        function handleHashLink() {
+            if (window.location.hash && window.location.hash.startsWith('#post-')) {
+                const postId = window.location.hash.replace('#post-', '');
+                const contentEl = document.getElementById(`content-${postId}`);
+                if (contentEl) {
+                    contentEl.style.display = 'block';
+                    const card = contentEl.closest('.post-card');
+                    if (card) {
+                        card.style.borderColor = 'var(--cf-orange)';
+                        const btn = card.querySelector('.read-more-btn');
+                        if (btn) btn.textContent = 'Collapse Logs';
+                        
+                        setTimeout(() => {
+                            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 300);
+                    }
+                }
+            }
         }
 
         fetchPosts();
