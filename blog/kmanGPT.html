@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kmanGPT Blog | Developer Logs</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #090b0f;
+            --grid-line-color: rgba(0, 229, 255, 0.04);
+            --border-color: #1e222b;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --cf-orange: #00e5ff;
+            --cf-orange-glow: rgba(0, 229, 255, 0.12);
+            --cf-gradient: linear-gradient(135deg, #00e5ff 0%, #0088ff 100%);
+            --card-bg: #0d1017;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Geometric Grid Pattern Background */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        .glow-effect {
+            position: absolute;
+            top: -150px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 400px;
+            background: radial-gradient(circle, var(--cf-orange-glow) 0%, rgba(9, 11, 15, 0) 70%);
+            z-index: -1;
+            pointer-events: none;
+            filter: blur(50px);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(9, 11, 15, 0.85);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-mark {
+            width: 28px;
+            height: 28px;
+            background: var(--cf-gradient);
+            clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+        }
+
+        .logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.02em;
+        }
+
+        nav {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        nav a:hover {
+            color: var(--cf-orange);
+        }
+
+        .btn-nav {
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 4px;
+            font-weight: 600;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-nav:hover {
+            border-color: var(--cf-orange);
+            color: var(--cf-orange);
+        }
+
+        main {
+            flex-grow: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 60px 8% 120px 8%;
+        }
+
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 10px;
+            letter-spacing: -0.03em;
+            text-align: center;
+            color: #fff;
+        }
+
+        h1 span {
+            background: var(--cf-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .blog-desc {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            margin-bottom: 40px;
+        }
+
+        /* Product-style Filter Section */
+        .filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .filter-tag {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-tag:hover, .filter-tag.active {
+            border-color: var(--cf-orange);
+            color: var(--cf-orange);
+            background: rgba(243, 128, 32, 0.05);
+        }
+
+        /* Blog Posts list */
+        .posts-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .post-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 32px;
+            transition: all 0.2s;
+            text-align: left;
+            position: relative;
+        }
+
+        .post-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: transparent;
+            transition: background 0.2s;
+        }
+
+        .post-card:hover {
+            border-color: rgba(243, 128, 32, 0.3);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+        }
+
+        .post-card:hover::after {
+            background: var(--cf-gradient);
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .post-date {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .post-tags {
+            display: flex;
+            gap: 6px;
+        }
+
+        .post-tag {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--cf-orange);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .post-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 10px;
+            letter-spacing: -0.02em;
+        }
+
+        .post-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        /* Post Content rendering */
+        .post-content {
+            margin-top: 15px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            line-height: 1.7;
+            color: #d1d5db;
+            display: none;
+        }
+
+        .post-content h2, .post-content h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            color: #fff;
+            margin: 24px 0 12px 0;
+        }
+        .post-content h2 { font-size: 1.35rem; }
+        .post-content h3 { font-size: 1.15rem; }
+        
+        .post-content p {
+            margin-bottom: 14px;
+        }
+
+        .post-content code {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 2px 6px;
+            border-radius: 2px;
+            font-family: monospace;
+            font-size: 0.9em;
+            color: #f472b6;
+        }
+
+        .post-content pre {
+            background: #05070a;
+            padding: 16px;
+            border-radius: 4px;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            margin-bottom: 16px;
+        }
+
+        .post-content pre code {
+            background: none;
+            padding: 0;
+            color: #e2e8f0;
+            font-size: 0.85em;
+        }
+
+        .post-content blockquote {
+            border-left: 3px solid var(--cf-orange);
+            padding-left: 16px;
+            margin: 16px 0;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .post-content ul, .post-content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .post-content li {
+            margin-bottom: 6px;
+        }
+
+        .read-more-btn {
+            align-self: flex-start;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+
+        .read-more-btn:hover {
+            border-color: var(--cf-orange);
+            color: var(--cf-orange);
+            background: rgba(243, 128, 32, 0.03);
+        }
+
+        footer {
+            margin-top: auto;
+            border-top: 1px solid var(--border-color);
+            padding: 24px 8%;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            background: rgba(9, 11, 15, 0.9);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        footer a {
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            color: var(--cf-orange);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            .post-card {
+                padding: 24px;
+            }
+            footer {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="glow-effect"></div>
+
+    <header>
+        <a href="../index.html" class="logo-container">
+            <div class="logo-mark"></div>
+            <div class="logo-text">kmanb</div>
+        </a>
+        <nav>
+            <a href="../index.html">Home</a>
+            <a href="../admin.html" class="btn-nav">Admin Dashboard</a>
+        </nav>
+    </header>
+
+    <main>
+        <h1><span>kmanGPT</span> Developer Logs</h1>
+        <p class="blog-desc">Detailed logs, features, updates, and releases from my AI assistant.</p>
+        
+        <div class="filter-container" id="filter-tags">
+            <span class="filter-tag active" onclick="filterPosts('All')">All Logs</span>
+        </div>
+
+        <div class="posts-container" id="posts-list">
+            <p style="text-align: center;">Loading database logs...</p>
+        </div>
+    </main>
+
+    <footer>
+        <div>&copy; 2026 kmanb. All rights reserved.</div>
+        <div>Coded with 💙 by Gemini AI</div>
+    </footer>
+
+    <script>
+        let allPosts = [];
+        let activeFilter = 'All';
+
+        async function fetchPosts() {
+            try {
+                const response = await fetch('posts.json');
+                if (!response.ok) {
+                    throw new Error('Could not load blog posts data.');
+                }
+                allPosts = await response.json();
+                renderTags();
+                renderPosts();
+            } catch (error) {
+                console.error(error);
+                document.getElementById('posts-list').innerHTML = `<p style="text-align: center; color: #ef4444;">Error: ${error.message}</p>`;
+            }
+        }
+
+        function renderTags() {
+            const filterContainer = document.getElementById('filter-tags');
+            
+            const tags = new Set();
+            allPosts.forEach(post => {
+                if (post.tags) {
+                    post.tags.forEach(tag => tags.add(tag.trim()));
+                }
+            });
+
+            filterContainer.innerHTML = `<span class="filter-tag ${activeFilter === 'All' ? 'active' : ''}" onclick="filterPosts('All')">All Logs</span>`;
+            tags.forEach(tag => {
+                filterContainer.innerHTML += `<span class="filter-tag ${activeFilter === tag ? 'active' : ''}" onclick="filterPosts('${tag}')">#${tag}</span>`;
+            });
+        }
+
+        function filterPosts(tag) {
+            activeFilter = tag;
+            renderTags();
+            renderPosts();
+        }
+
+        function toggleReadPost(postId, btn) {
+            const contentEl = document.getElementById(`content-${postId}`);
+            const isHidden = window.getComputedStyle(contentEl).display === 'none';
+            
+            if (isHidden) {
+                contentEl.style.display = 'block';
+                btn.textContent = 'Collapse Logs';
+            } else {
+                contentEl.style.display = 'none';
+                btn.textContent = 'Read Developer Logs';
+            }
+        }
+
+        function parseMarkdown(md) {
+            if (!md) return '';
+            
+            let html = md
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+
+            html = html.replace(/```([\s\S]*?)```/g, function(match, code) {
+                return '<pre><code>' + code.trim() + '</code></pre>';
+            });
+
+            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+            html = html.replace(/^\s*###\s+(.+)$/gm, '<h3>$1</h3>');
+            html = html.replace(/^\s*##\s+(.+)$/gm, '<h2>$1</h2>');
+            html = html.replace(/^\s*#\s+(.+)$/gm, '<h2>$1</h2>');
+
+            html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+
+            html = html.replace(/^\s*&gt;\s+(.+)$/gm, '<blockquote>$1</blockquote>');
+
+            let insideList = false;
+            const lines = html.split('\n');
+            for (let i = 0; i < lines.length; i++) {
+                if (lines[i].trim().startsWith('- ')) {
+                    let content = lines[i].trim().substring(2);
+                    if (!insideList) {
+                        lines[i] = '<ul><li>' + content + '</li>';
+                        insideList = true;
+                    } else {
+                        lines[i] = '<li>' + content + '</li>';
+                    }
+                } else {
+                    if (insideList) {
+                        lines[i] = '</ul>' + lines[i];
+                        insideList = false;
+                    }
+                }
+            }
+            if (insideList) {
+                lines.push('</ul>');
+            }
+            html = lines.join('\n');
+
+            html = html.split(/\n\n+/).map(p => {
+                if (p.trim().startsWith('<h') || p.trim().startsWith('<ul') || p.trim().startsWith('</ul') || p.trim().startsWith('<pre') || p.trim().startsWith('<block')) {
+                    return p;
+                }
+                return '<p>' + p.replace(/\n/g, '<br>') + '</p>';
+            }).join('\n');
+
+            return html;
+        }
+
+        function renderPosts() {
+            const postsList = document.getElementById('posts-list');
+            postsList.innerHTML = '';
+
+            const filteredPosts = activeFilter === 'All' 
+                ? allPosts 
+                : allPosts.filter(post => post.tags && post.tags.includes(activeFilter));
+
+            filteredPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            if (filteredPosts.length === 0) {
+                postsList.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">No logs matched this tag filter.</p>';
+                return;
+            }
+
+            filteredPosts.forEach(post => {
+                const formattedTags = post.tags ? post.tags.map(t => `<span class="post-tag">#${t}</span>`).join(' ') : '';
+                const parsedContent = parseMarkdown(post.content);
+
+                const card = document.createElement('div');
+                card.className = 'post-card';
+                card.innerHTML = `
+                    <div class="post-header">
+                        <div class="post-tags">${formattedTags}</div>
+                        <div class="post-date">${post.date}</div>
+                    </div>
+                    <h2 class="post-title">${post.title}</h2>
+                    <div class="post-subtitle">${post.subtitle || ''}</div>
+                    <div class="post-content" id="content-${post.id}">
+                        ${parsedContent}
+                    </div>
+                    <button class="read-more-btn" onclick="toggleReadPost('${post.id}', this)">Read Developer Logs</button>
+                `;
+                postsList.appendChild(card);
+            });
+        }
+
+        fetchPosts();
+    </script>
+</body>
+</html>

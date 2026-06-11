@@ -3,491 +3,588 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub File Manager</title>
+    <title>kmanb | Official Website</title>
+    <!-- Google Fonts: Inter & Space Grotesk for that sharp tech aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --bg-color: #ffffff;
-            --text-color: #000000;
-            --border-color: #ccc;
-            --highlight: #f0f0f0;
-            --link-color: #0000EE;
+            --bg-color: #090b0f;
+            --grid-line-color: rgba(0, 229, 255, 0.04);
+            --border-color: #1e222b;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --cf-orange: #00e5ff;
+            --cf-orange-glow: rgba(0, 229, 255, 0.12);
+            --cf-gradient: linear-gradient(135deg, #00e5ff 0%, #0088ff 100%);
+            --card-bg: #0d1017;
+            --discord-color: #5865F2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            font-family: "Courier New", Courier, monospace;
+            font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
         }
 
-        h1, h2, h3 {
-            font-weight: bold;
-            text-transform: uppercase;
-            border-bottom: 2px solid var(--text-color);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        a {
-            color: var(--link-color);
-            text-decoration: underline;
-            cursor: pointer;
-        }
-        
-        a:hover {
-            background-color: var(--highlight);
-        }
-
-        .container {
-            border: 1px solid var(--border-color);
-            padding: 20px;
-        }
-
-        input[type="text"], input[type="password"] {
-            display: block;
+        /* Cloudflare-style Geometric Grid Background */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-            font-family: inherit;
-            border: 1px solid var(--text-color);
-            box-sizing: border-box;
+            height: 100%;
+            background-image: 
+                linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: -2;
+            pointer-events: none;
         }
 
-        button {
-            background-color: #eee;
-            border: 2px solid #000;
-            color: #000;
-            padding: 10px 20px;
-            font-family: inherit;
-            font-weight: bold;
+        /* Subtle Orange Glow in Hero */
+        .glow-effect {
+            position: absolute;
+            top: -150px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 400px;
+            background: radial-gradient(circle, var(--cf-orange-glow) 0%, rgba(9, 11, 15, 0) 70%);
+            z-index: -1;
+            pointer-events: none;
+            filter: blur(50px);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(9, 11, 15, 0.85);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-mark {
+            width: 28px;
+            height: 28px;
+            background: var(--cf-gradient);
+            clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+        }
+
+        .logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.02em;
+            text-decoration: none;
+        }
+
+        nav {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        nav a:hover {
+            color: var(--cf-orange);
+        }
+
+        .btn-nav {
+            border: 1px solid var(--cf-orange);
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 4px;
+            font-weight: 600;
+            background: transparent;
             cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-nav:hover {
+            background: var(--cf-gradient);
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(243, 128, 32, 0.25);
+        }
+
+        main {
+            flex-grow: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 80px 8% 120px 8%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .hero-announcement {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(243, 128, 32, 0.08);
+            border: 1px solid rgba(243, 128, 32, 0.2);
+            border-radius: 9999px;
+            padding: 6px 16px;
+            color: var(--cf-orange);
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 30px;
+        }
+
+        .hero-announcement span {
+            background: var(--cf-gradient);
+            color: #000;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
             text-transform: uppercase;
         }
 
-        button:hover {
-            background-color: #ddd;
-        }
-
-        button:active {
-            background-color: #000;
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3.8rem;
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: 24px;
+            letter-spacing: -0.03em;
             color: #fff;
         }
 
-        .hidden {
-            display: none !important;
+        h1 span {
+            background: var(--cf-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        #file-list {
-            list-style-type: none;
-            padding: 0;
+        .hero-desc {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 760px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--cf-gradient);
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 4px 15px rgba(243, 128, 32, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 14px 28px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--text-secondary);
+            background: rgba(255,255,255,0.02);
+        }
+
+        /* Grid Feature Boxes - Inspired by Cloudflare Product Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            width: 100%;
+            border: 1px solid var(--border-color);
+            background: var(--bg-color);
+            margin-top: 40px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .feature-card {
+            padding: 40px;
+            text-align: left;
+            border-right: 1px solid var(--border-color);
+            transition: background 0.3s;
+            position: relative;
+        }
+
+        .feature-card:last-child {
+            border-right: none;
+        }
+
+        .feature-card:hover {
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .feature-icon {
+            font-size: 1.5rem;
+            color: var(--cf-orange);
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .feature-link {
+            color: var(--cf-orange);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 20px;
+        }
+
+        .feature-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Cloudflare-style Live status Widget */
+        .status-section {
+            width: 100%;
+            max-width: 600px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            border-radius: 4px;
+            padding: 24px;
+            text-align: left;
+            margin: 0 auto 50px auto;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .status-section::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 4px;
+            background: var(--cf-gradient);
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            width: 68px;
+            height: 68px;
+            flex-shrink: 0;
+        }
+
+        .avatar-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 4px;
+            object-fit: cover;
+            border: 1px solid var(--border-color);
+        }
+
+        .status-badge {
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 3px solid var(--card-bg);
+            background: #6b7280;
+        }
+
+        .status-online { background-color: #10b981; }
+        .status-idle { background-color: #f59e0b; }
+        .status-dnd { background-color: #ef4444; }
+        .status-offline { background-color: #6b7280; }
+
+        .status-details {
+            flex-grow: 1;
+        }
+
+        .status-header {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .status-activity {
+            font-size: 0.8rem;
+            color: var(--cf-orange);
+            font-weight: 500;
+            margin-top: 6px;
+        }
+
+        .join-discord-btn {
+            border: 1px solid var(--border-color);
+            color: #fff;
+            background: transparent;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            align-self: center;
+        }
+
+        .join-discord-btn:hover {
+            border-color: var(--cf-orange);
+            color: var(--cf-orange);
+        }
+
+        footer {
+            margin-top: auto;
             border-top: 1px solid var(--border-color);
-        }
-
-        #file-list li {
-            padding: 10px 5px;
-            border-bottom: 1px solid var(--border-color);
+            padding: 24px 8%;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            background: rgba(9, 11, 15, 0.9);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
-        #file-list li:hover {
-            background-color: var(--highlight);
+
+        footer a {
+            color: var(--text-secondary);
+            text-decoration: none;
         }
 
-        .file-name {
-            flex-grow: 1;
+        footer a:hover {
+            color: var(--cf-orange);
         }
 
-        .file-actions button {
-            padding: 2px 5px;
-            font-size: 0.8em;
-            margin-left: 10px;
-        }
-
-        .breadcrumbs {
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-        
-        .breadcrumbs span {
-            margin-right: 5px;
-        }
-
-        #upload-section {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 2px solid var(--text-color);
-        }
-
-        .disclaimer {
-            font-size: 0.8em;
-            color: #555;
-            margin-top: 20px;
-            border-top: 1px dashed #ccc;
-            padding-top: 10px;
-        }
-
-        .error-message {
-            color: red;
-            margin-bottom: 10px;
-            font-weight: bold;
+        @media (max-width: 900px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .feature-card {
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            .feature-card:last-child {
+                border-bottom: none;
+            }
+            h1 {
+                font-size: 2.8rem;
+            }
+            footer {
+                flex-direction: column;
+                gap: 12px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <h1>GH File Manager v1.0</h1>
+    <div class="glow-effect"></div>
 
-    <div id="login-screen" class="container">
-        <h2>Authentication</h2>
-        <div id="login-error" class="error-message hidden"></div>
-        <p>Enter your GitHub credentials to manage files.</p>
-        
-        <label for="gh-token">Personal Access Token:</label>
-        <input type="password" id="gh-token" placeholder="github_pat_..." autocomplete="off">
-        
-        <label for="gh-owner">Repository Owner:</label>
-        <input type="text" id="gh-owner" placeholder="kmanb44">
-        
-        <label for="gh-repo">Repository Name:</label>
-        <input type="text" id="gh-repo" placeholder="kmanb44.github.io">
-        
-        <button onclick="app.login()">Connect</button>
-        
-        <div class="disclaimer">
-            <strong>SECURITY NOTE:</strong> Please use a <em>Fine-grained Personal Access Token</em> scoped only to "Contents: Read & Write" for this specific public repository. 
-            Credentials are saved in browser Session Storage and are cleared when the tab is closed.
-        </div>
-    </div>
+    <header>
+        <a href="index.html" class="logo-container" style="text-decoration: none;">
+            <div class="logo-mark"></div>
+            <div class="logo-text">kmanb</div>
+        </a>
+        <nav>
+            <a href="blog/kmanGPT.html">Dev Logs</a>
+            <a href="admin.html" class="btn-nav">Admin Dashboard</a>
+        </nav>
+    </header>
 
-    <div id="main-screen" class="container hidden">
-        <div style="display: flex; justify-content: space-between; align-items: baseline;">
-            <div id="repo-info">Connected: <strong>Owner/Repo</strong></div>
-            <button onclick="app.logout()" style="padding: 5px 10px; font-size: 0.8em;">Logout</button>
-        </div>
-        
-        <hr>
-
-        <div class="breadcrumbs" id="breadcrumbs">
-            <!-- Breadcrumbs injected here -->
+    <main>
+        <div class="hero-announcement">
+            <span>Live Updates</span> Connected to Lanyard API
         </div>
 
-        <ul id="file-list">
-            <!-- Files injected here -->
-            <li>Loading...</li>
-        </ul>
-
-        <div id="upload-section">
-            <h3>Upload File</h3>
-            <input type="file" id="file-input">
-            <input type="text" id="upload-path" placeholder="Optional: subfolder/filename.txt (defaults to file name)">
-            <button onclick="app.uploadFile()">Upload</button>
-            <div id="upload-status"></div>
+        <h1>Planes, edits, and <span>AI logs</span>.</h1>
+        
+        <p class="hero-desc">Making War Thunder and Ace Combat videos, posting plane and anime edits, and building kmanGPT to act exactly like me.</p>
+        
+        <div class="cta-group">
+            <a href="https://www.youtube.com/@kmanb/" target="_blank" class="btn-primary">Visit YouTube Channel</a>
+            <a href="blog/kmanGPT.html" class="btn-secondary">Read Developer Logs</a>
         </div>
-    </div>
 
-<script>
-    const app = {
-        state: {
-            token: null,
-            owner: null,
-            repo: null,
-            currentPath: ''
-        },
+        <!-- Live Status Widget -->
+        <div class="status-section">
+            <div class="avatar-wrapper">
+                <img id="discord-avatar" class="avatar-image" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Discord Avatar">
+                <div id="discord-status" class="status-badge status-offline"></div>
+            </div>
+            <div class="status-details">
+                <div class="status-header">
+                    <span id="discord-name">kmanb</span>
+                    <span style="font-size: 0.75rem; color: var(--cf-orange); font-weight: 500; border: 1px solid rgba(0, 229, 255, 0.3); padding: 1px 6px; border-radius: 2px;">LIVE</span>
+                </div>
+                <div id="discord-custom-status" class="status-text">Fetching presence details...</div>
+                <div id="discord-curr-activity" class="status-activity" style="display:none;"></div>
+            </div>
+            <a href="https://discord.gg/seBfHeNXB3" target="_blank" class="join-discord-btn">Join Server</a>
+        </div>
 
-        init: function() {
-            const token = sessionStorage.getItem('gh_token');
-            const owner = sessionStorage.getItem('gh_owner');
-            const repo = sessionStorage.getItem('gh_repo');
+        <!-- Features Grid -->
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="feature-icon">🎬</span>
+                <h3>YouTube Channel</h3>
+                <p>War Thunder, Ace Combat, and aviation edits. I also occasionally post anime edits and other random videos.</p>
+                <a href="https://www.youtube.com/@kmanb/" target="_blank" class="feature-link">Explore channel &rarr;</a>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🤖</span>
+                <h3>kmanGPT Companion</h3>
+                <p>An AI companion literally designed to replicate talking to me. Read about the features and dev logs here.</p>
+                <a href="blog/kmanGPT.html" class="feature-link">Read logs &rarr;</a>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🪐</span>
+                <h3>Community Discord</h3>
+                <p>A chill community for my channel, talking about planes, Ace Combat, edits, and sharing stuff.</p>
+                <a href="https://discord.gg/seBfHeNXB3" target="_blank" class="feature-link">Join community &rarr;</a>
+            </div>
+        </div>
+    </main>
 
-            if (token && owner && repo) {
-                this.state.token = token;
-                this.state.owner = owner;
-                this.state.repo = repo;
-                this.showMainScreen();
-                this.fetchFiles('');
-            }
-        },
+    <footer>
+        <div>&copy; 2026 kmanb. All rights reserved.</div>
+        <div>Coded with 💙 by Gemini AI</div>
+    </footer>
 
-        login: function() {
-            const token = document.getElementById('gh-token').value.trim();
-            const owner = document.getElementById('gh-owner').value.trim();
-            const repo = document.getElementById('gh-repo').value.trim();
-
-            if (!token || !owner || !repo) {
-                this.showError('All fields are required.');
-                return;
-            }
-
-            sessionStorage.setItem('gh_token', token);
-            sessionStorage.setItem('gh_owner', owner);
-            sessionStorage.setItem('gh_repo', repo);
-
-            this.state.token = token;
-            this.state.owner = owner;
-            this.state.repo = repo;
-            
-            this.showError(''); // Clear errors
-            this.showMainScreen();
-            this.fetchFiles('');
-        },
-
-        logout: function() {
-            sessionStorage.clear();
-            location.reload();
-        },
-
-        showError: function(msg) {
-            const errDiv = document.getElementById('login-error');
-            if (msg) {
-                errDiv.textContent = msg;
-                errDiv.classList.remove('hidden');
-            } else {
-                errDiv.classList.add('hidden');
-            }
-        },
-
-        showMainScreen: function() {
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('main-screen').classList.remove('hidden');
-            document.getElementById('repo-info').innerHTML = `Connected: <strong>${this.state.owner}/${this.state.repo}</strong>`;
-        },
-
-        updateBreadcrumbs: function(path) {
-            const container = document.getElementById('breadcrumbs');
-            container.innerHTML = '';
-            
-            // Root
-            const rootLink = document.createElement('a');
-            rootLink.textContent = 'root';
-            rootLink.onclick = () => this.fetchFiles('');
-            container.appendChild(rootLink);
-            container.appendChild(document.createTextNode(' / '));
-
-            if (!path) {
-                this.state.currentPath = '';
-                return;
-            }
-
-            this.state.currentPath = path;
-            const parts = path.split('/');
-            let currentBuild = '';
-            
-            parts.forEach((part, index) => {
-                currentBuild += (index > 0 ? '/' : '') + part;
-                const partLink = document.createElement('a');
-                partLink.textContent = part;
-                const pathRef = currentBuild; // Closure capture
-                partLink.onclick = () => this.fetchFiles(pathRef);
-                container.appendChild(partLink);
-                if (index < parts.length - 1) {
-                    container.appendChild(document.createTextNode(' / '));
-                }
-            });
-        },
-
-        fetchFiles: async function(path) {
-            this.updateBreadcrumbs(path);
-            const listEl = document.getElementById('file-list');
-            listEl.innerHTML = '<li>Loading...</li>';
+    <script>
+        async function fetchDiscordStatus() {
+            const userId = '526776820926775296';
+            const avatarEl = document.getElementById('discord-avatar');
+            const statusEl = document.getElementById('discord-status');
+            const nameEl = document.getElementById('discord-name');
+            const customStatusEl = document.getElementById('discord-custom-status');
+            const activityEl = document.getElementById('discord-curr-activity');
 
             try {
-                const url = `https://api.github.com/repos/${this.state.owner}/${this.state.repo}/contents/${path}`;
-                const response = await fetch(url, {
-                    headers: {
-                        'Authorization': `Bearer ${this.state.token}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error(`API Error: ${response.status} ${response.statusText}`);
-                }
-
-                const data = await response.json();
-                this.renderList(data);
-            } catch (error) {
-                console.error(error);
-                listEl.innerHTML = `<li style="color: red;">Error: ${error.message}</li>`;
-                if (error.message.includes('401') || error.message.includes('403')) {
-                    alert('Authentication failed. Please check your token.');
-                    this.logout();
-                }
-            }
-        },
-
-        renderList: function(data) {
-            const listEl = document.getElementById('file-list');
-            listEl.innerHTML = '';
-
-            // Sort: Directories first, then files
-            data.sort((a, b) => {
-                if (a.type === b.type) return a.name.localeCompare(b.name);
-                return a.type === 'dir' ? -1 : 1;
-            });
-
-            if (this.state.currentPath !== '') {
-                 const parentPath = this.state.currentPath.substring(0, this.state.currentPath.lastIndexOf('/'));
-                 // If lastIndexOf is -1 (top level file in folder), parentPath becomes empty string, which is correct for root
-                 const li = document.createElement('li');
-                 li.innerHTML = `<a onclick="app.fetchFiles('${parentPath}')">.. [Up]</a>`;
-                 listEl.appendChild(li);
-            }
-
-            if (data.length === 0) {
-                listEl.innerHTML = '<li>No files found.</li>';
-                return;
-            }
-
-            data.forEach(item => {
-                const li = document.createElement('li');
-                const isDir = item.type === 'dir';
+                const response = await fetch(`https://api.lanyard.rest/v1/users/${userId}`);
+                if (!response.ok) throw new Error('Failed to query status');
                 
-                const nameSpan = document.createElement('span');
-                nameSpan.className = 'file-name';
-                
-                if (isDir) {
-                    const link = document.createElement('a');
-                    link.textContent = `[DIR] ${item.name}`;
-                    link.onclick = () => this.fetchFiles(item.path);
-                    nameSpan.appendChild(link);
-                } else {
-                    nameSpan.textContent = item.name;
-                }
-
-                const actionsDiv = document.createElement('div');
-                actionsDiv.className = 'file-actions';
-
-                if (!isDir) {
-                    const viewBtn = document.createElement('button');
-                    viewBtn.textContent = 'View';
-                    viewBtn.onclick = () => window.open(item.html_url, '_blank');
-                    actionsDiv.appendChild(viewBtn);
-
-                    const deleteBtn = document.createElement('button');
-                    deleteBtn.textContent = 'Del';
-                    deleteBtn.onclick = () => this.deleteFile(item.path, item.sha);
-                    actionsDiv.appendChild(deleteBtn);
-                }
-
-                li.appendChild(nameSpan);
-                li.appendChild(actionsDiv);
-                listEl.appendChild(li);
-            });
-        },
-
-        uploadFile: async function() {
-            const fileInput = document.getElementById('file-input');
-            const customPathInput = document.getElementById('upload-path');
-            const statusDiv = document.getElementById('upload-status');
-
-            if (fileInput.files.length === 0) {
-                alert('Please select a file.');
-                return;
-            }
-
-            const file = fileInput.files[0];
-            const reader = new FileReader();
-
-            // Determine path
-            let targetPath = customPathInput.value.trim();
-            if (!targetPath) {
-                // If in a subdirectory, append filename to current path
-                if (this.state.currentPath) {
-                    targetPath = `${this.state.currentPath}/${file.name}`;
-                } else {
-                    targetPath = file.name;
-                }
-            } else {
-                // Remove leading slash if present
-                 if(targetPath.startsWith('/')) targetPath = targetPath.substring(1);
-            }
-
-            statusDiv.textContent = 'Reading file...';
-
-            reader.onload = async (e) => {
-                statusDiv.textContent = 'Uploading...';
-                // Remove 'data:*/*;base64,' prefix
-                const contentBase64 = e.target.result.split(',')[1];
-                
-                try {
-                    const url = `https://api.github.com/repos/${this.state.owner}/${this.state.repo}/contents/${targetPath}`;
+                const payload = await response.json();
+                if (payload.success && payload.data) {
+                    const data = payload.data;
                     
-                    const body = {
-                        message: `Upload ${file.name} via GH File Manager`,
-                        content: contentBase64
-                    };
+                    if (data.discord_user.avatar) {
+                        avatarEl.src = `https://cdn.discordapp.com/avatars/${userId}/${data.discord_user.avatar}.png?size=128`;
+                    }
+                    
+                    nameEl.textContent = data.discord_user.global_name || data.discord_user.username;
+                    
+                    statusEl.className = 'status-badge';
+                    if (data.discord_status === 'online') statusEl.classList.add('status-online');
+                    else if (data.discord_status === 'idle') statusEl.classList.add('status-idle');
+                    else if (data.discord_status === 'dnd') statusEl.classList.add('status-dnd');
+                    else statusEl.classList.add('status-offline');
 
-                    const response = await fetch(url, {
-                        method: 'PUT',
-                        headers: {
-                            'Authorization': `Bearer ${this.state.token}`,
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/vnd.github.v3+json'
-                        },
-                        body: JSON.stringify(body)
-                    });
-
-                    if (!response.ok) {
-                        const errData = await response.json();
-                        throw new Error(errData.message || response.statusText);
+                    if (data.custom_status) {
+                        const emoji = data.custom_status.emoji ? (data.custom_status.emoji.id ? '' : data.custom_status.emoji.name + ' ') : '';
+                        customStatusEl.textContent = `${emoji}${data.custom_status.text}`;
+                    } else {
+                        customStatusEl.textContent = "Status: " + data.discord_status;
                     }
 
-                    statusDiv.textContent = 'Upload successful!';
-                    fileInput.value = ''; // Reset
-                    customPathInput.value = '';
-                    this.fetchFiles(this.state.currentPath); // Refresh list
-                    setTimeout(() => statusDiv.textContent = '', 3000);
+                    const activities = data.activities || [];
+                    const gameActivity = activities.find(act => act.type === 0);
+                    const spotifyActivity = data.spotify;
 
-                } catch (error) {
-                    console.error(error);
-                    statusDiv.innerHTML = `<span style="color:red">Error: ${error.message}</span>`;
+                    if (spotifyActivity) {
+                        activityEl.style.display = 'block';
+                        activityEl.innerHTML = `🎵 Listening to <strong>${spotifyActivity.song}</strong>`;
+                    } else if (gameActivity) {
+                        activityEl.style.display = 'block';
+                        activityEl.innerHTML = `🎮 Playing <strong>${gameActivity.name}</strong>`;
+                    } else {
+                        activityEl.style.display = 'none';
+                    }
                 }
-            };
-
-            reader.readAsDataURL(file);
-        },
-
-        deleteFile: async function(path, sha) {
-            if (!confirm(`Are you sure you want to delete ${path}?`)) return;
-
-            try {
-                const url = `https://api.github.com/repos/${this.state.owner}/${this.state.repo}/contents/${path}`;
-                const body = {
-                    message: `Delete ${path} via GH File Manager`,
-                    sha: sha
-                };
-
-                const response = await fetch(url, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${this.state.token}`,
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/vnd.github.v3+json'
-                    },
-                    body: JSON.stringify(body)
-                });
-
-                if (!response.ok) {
-                    const errData = await response.json();
-                    throw new Error(errData.message || response.statusText);
-                }
-
-                this.fetchFiles(this.state.currentPath); // Refresh
-
-            } catch (error) {
-                alert(`Delete failed: ${error.message}`);
+            } catch (err) {
+                console.error(err);
+                customStatusEl.textContent = "Offline / Status unavailable";
             }
         }
-    };
 
-    // Initialize on load
-    app.init();
-</script>
+        fetchDiscordStatus();
+        setInterval(fetchDiscordStatus, 30000);
+    </script>
 </body>
 </html>
