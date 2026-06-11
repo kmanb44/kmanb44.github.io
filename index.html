@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +8,10 @@
     <!-- Google Fonts: Inter & Space Grotesk for that sharp tech aesthetic -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
     <style>
         :root {
             --bg-color: #090b0f;
@@ -48,7 +51,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
+            background-image:
                 linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px),
                 linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px);
             background-size: 60px 60px;
@@ -240,7 +243,7 @@
 
         .btn-secondary:hover {
             border-color: var(--text-secondary);
-            background: rgba(255,255,255,0.02);
+            background: rgba(255, 255, 255, 0.02);
         }
 
         /* Grid Feature Boxes - Inspired by Cloudflare Product Grid */
@@ -360,10 +363,21 @@
             background: #6b7280;
         }
 
-        .status-online { background-color: #10b981; }
-        .status-idle { background-color: #f59e0b; }
-        .status-dnd { background-color: #ef4444; }
-        .status-offline { background-color: #6b7280; }
+        .status-online {
+            background-color: #10b981;
+        }
+
+        .status-idle {
+            background-color: #f59e0b;
+        }
+
+        .status-dnd {
+            background-color: #ef4444;
+        }
+
+        .status-offline {
+            background-color: #6b7280;
+        }
 
         .status-details {
             flex-grow: 1;
@@ -436,16 +450,20 @@
             .features-grid {
                 grid-template-columns: 1fr;
             }
+
             .feature-card {
                 border-right: none;
                 border-bottom: 1px solid var(--border-color);
             }
+
             .feature-card:last-child {
                 border-bottom: none;
             }
+
             h1 {
                 font-size: 2.8rem;
             }
+
             footer {
                 flex-direction: column;
                 gap: 12px;
@@ -453,6 +471,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="glow-effect"></div>
@@ -473,10 +492,11 @@
             <span>Live Updates</span> Connected to Lanyard API
         </div>
 
-        <h1>Planes, edits, and <span>AI logs</span>.</h1>
-        
-        <p class="hero-desc">Making War Thunder and Ace Combat videos, posting plane and anime edits, and building kmanGPT to act exactly like me.</p>
-        
+        <h1>Planes, edits, and <span>code</span>.</h1>
+
+        <p class="hero-desc">Making War Thunder and Ace Combat videos, posting plane and anime edits, and building
+            kmanGPT to act exactly like me.</p>
+
         <div class="cta-group">
             <a href="https://www.youtube.com/@kmanb/" target="_blank" class="btn-primary">Visit YouTube Channel</a>
             <a href="blog/kmanGPT.html" class="btn-secondary">Read Developer Logs</a>
@@ -485,13 +505,15 @@
         <!-- Live Status Widget -->
         <div class="status-section">
             <div class="avatar-wrapper">
-                <img id="discord-avatar" class="avatar-image" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Discord Avatar">
+                <img id="discord-avatar" class="avatar-image" src="https://cdn.discordapp.com/embed/avatars/0.png"
+                    alt="Discord Avatar">
                 <div id="discord-status" class="status-badge status-offline"></div>
             </div>
             <div class="status-details">
                 <div class="status-header">
                     <span id="discord-name">kmanb</span>
-                    <span style="font-size: 0.75rem; color: var(--cf-orange); font-weight: 500; border: 1px solid rgba(0, 229, 255, 0.3); padding: 1px 6px; border-radius: 2px;">LIVE</span>
+                    <span
+                        style="font-size: 0.75rem; color: var(--cf-orange); font-weight: 500; border: 1px solid rgba(0, 229, 255, 0.3); padding: 1px 6px; border-radius: 2px;">LIVE</span>
                 </div>
                 <div id="discord-custom-status" class="status-text">Fetching presence details...</div>
                 <div id="discord-curr-activity" class="status-activity" style="display:none;"></div>
@@ -504,13 +526,16 @@
             <div class="feature-card">
                 <span class="feature-icon">🎬</span>
                 <h3>YouTube Channel</h3>
-                <p>War Thunder, Ace Combat, and aviation edits. I also occasionally post anime edits and other random videos.</p>
-                <a href="https://www.youtube.com/@kmanb/" target="_blank" class="feature-link">Explore channel &rarr;</a>
+                <p>War Thunder, Ace Combat, and aviation edits. I also occasionally post anime edits and other random
+                    videos.</p>
+                <a href="https://www.youtube.com/@kmanb/" target="_blank" class="feature-link">Explore channel
+                    &rarr;</a>
             </div>
             <div class="feature-card">
                 <span class="feature-icon">🤖</span>
                 <h3>kmanGPT Companion</h3>
-                <p>An AI companion literally designed to replicate talking to me. Read about the features and dev logs here.</p>
+                <p>An AI companion literally designed to replicate talking to me. Read about the features and dev logs
+                    here.</p>
                 <a href="blog/kmanGPT.html" class="feature-link">Read logs &rarr;</a>
             </div>
             <div class="feature-card">
@@ -539,17 +564,17 @@
             try {
                 const response = await fetch(`https://api.lanyard.rest/v1/users/${userId}`);
                 if (!response.ok) throw new Error('Failed to query status');
-                
+
                 const payload = await response.json();
                 if (payload.success && payload.data) {
                     const data = payload.data;
-                    
+
                     if (data.discord_user.avatar) {
                         avatarEl.src = `https://cdn.discordapp.com/avatars/${userId}/${data.discord_user.avatar}.png?size=128`;
                     }
-                    
+
                     nameEl.textContent = data.discord_user.global_name || data.discord_user.username;
-                    
+
                     statusEl.className = 'status-badge';
                     if (data.discord_status === 'online') statusEl.classList.add('status-online');
                     else if (data.discord_status === 'idle') statusEl.classList.add('status-idle');
@@ -587,4 +612,5 @@
         setInterval(fetchDiscordStatus, 30000);
     </script>
 </body>
+
 </html>
