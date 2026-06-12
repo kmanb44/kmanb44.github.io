@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +8,10 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
     <style>
         :root {
             --bg-color: #090b0f;
@@ -47,7 +50,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
+            background-image:
                 linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px),
                 linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px);
             background-size: 60px 60px;
@@ -193,7 +196,8 @@
             transition: all 0.2s;
         }
 
-        .filter-tag:hover, .filter-tag.active {
+        .filter-tag:hover,
+        .filter-tag.active {
             border-color: var(--cf-orange);
             color: var(--cf-orange);
             background: rgba(243, 128, 32, 0.05);
@@ -229,7 +233,7 @@
 
         .post-card:hover {
             border-color: rgba(243, 128, 32, 0.3);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
         }
 
         .post-card:hover::after {
@@ -287,14 +291,21 @@
             display: none;
         }
 
-        .post-content h2, .post-content h3 {
+        .post-content h2,
+        .post-content h3 {
             font-family: 'Space Grotesk', sans-serif;
             color: #fff;
             margin: 24px 0 12px 0;
         }
-        .post-content h2 { font-size: 1.35rem; }
-        .post-content h3 { font-size: 1.15rem; }
-        
+
+        .post-content h2 {
+            font-size: 1.35rem;
+        }
+
+        .post-content h3 {
+            font-size: 1.15rem;
+        }
+
         .post-content p {
             margin-bottom: 14px;
         }
@@ -332,7 +343,8 @@
             font-style: italic;
         }
 
-        .post-content ul, .post-content ol {
+        .post-content ul,
+        .post-content ol {
             margin-left: 20px;
             margin-bottom: 14px;
         }
@@ -387,9 +399,11 @@
             h1 {
                 font-size: 2.2rem;
             }
+
             .post-card {
                 padding: 24px;
             }
+
             footer {
                 flex-direction: column;
                 gap: 12px;
@@ -397,6 +411,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="glow-effect"></div>
@@ -414,8 +429,8 @@
 
     <main>
         <h1><span>kmanGPT</span> Developer Logs</h1>
-        <p class="blog-desc">Detailed logs, features, updates, and releases from my AI assistant.</p>
-        
+        <p class="blog-desc">Detailed logs, features, updates, and releases about my AI clone.</p>
+
         <div class="filter-container" id="filter-tags">
             <span class="filter-tag active" onclick="filterPosts('All')">All Logs</span>
         </div>
@@ -452,7 +467,7 @@
 
         function renderTags() {
             const filterContainer = document.getElementById('filter-tags');
-            
+
             const tags = new Set();
             allPosts.forEach(post => {
                 if (post.tags) {
@@ -475,7 +490,7 @@
         function toggleReadPost(postId, btn) {
             const contentEl = document.getElementById(`content-${postId}`);
             const isHidden = window.getComputedStyle(contentEl).display === 'none';
-            
+
             if (isHidden) {
                 contentEl.style.display = 'block';
                 btn.textContent = 'Collapse Logs';
@@ -487,13 +502,13 @@
 
         function parseMarkdown(md) {
             if (!md) return '';
-            
+
             let html = md
                 .replace(/&/g, "&amp;")
                 .replace(/</g, "&lt;")
                 .replace(/>/g, "&gt;");
 
-            html = html.replace(/```([\s\S]*?)```/g, function(match, code) {
+            html = html.replace(/```([\s\S]*?)```/g, function (match, code) {
                 return '<pre><code>' + code.trim() + '</code></pre>';
             });
 
@@ -544,8 +559,8 @@
             const postsList = document.getElementById('posts-list');
             postsList.innerHTML = '';
 
-            const filteredPosts = activeFilter === 'All' 
-                ? allPosts 
+            const filteredPosts = activeFilter === 'All'
+                ? allPosts
                 : allPosts.filter(post => post.tags && post.tags.includes(activeFilter));
 
             filteredPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -606,7 +621,7 @@
                         card.style.borderColor = 'var(--cf-orange)';
                         const btn = card.querySelector('.read-more-btn');
                         if (btn) btn.textContent = 'Collapse Logs';
-                        
+
                         setTimeout(() => {
                             card.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }, 300);
@@ -618,4 +633,5 @@
         fetchPosts();
     </script>
 </body>
+
 </html>
