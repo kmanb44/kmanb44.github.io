@@ -5,6 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>kmanGPT Blog | Developer Logs</title>
+
+    <!-- Link previews (Discord, Twitter, etc.) for the blog index. Individual
+         posts have their own generated preview pages in blog/posts/. -->
+    <meta name="description" content="Detailed logs, features, updates, and releases about my AI clone.">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="#kmanGPT">
+    <meta property="og:title" content="kmanGPT Developer Logs">
+    <meta property="og:description" content="Detailed logs, features, updates, and releases about my AI clone.">
+    <meta property="og:url" content="https://kmanb44.github.io/blog/kmanGPT.html">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="kmanGPT Developer Logs">
+    <meta name="twitter:description" content="Detailed logs, features, updates, and releases about my AI clone.">
+    <meta name="theme-color" content="#00e5ff">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -598,7 +612,9 @@
         }
 
         function sharePost(id, btn) {
-            const shareUrl = `${window.location.origin}${window.location.pathname}#post-${id}`;
+            // Each post has a static preview page so Discord can read its
+            // title/subtitle/tags (link preview bots do not run JavaScript).
+            const shareUrl = new URL(`posts/${encodeURIComponent(id)}.html`, window.location.href).toString();
             navigator.clipboard.writeText(shareUrl).then(() => {
                 const originalText = btn.innerHTML;
                 btn.innerHTML = '✅ Copied!';

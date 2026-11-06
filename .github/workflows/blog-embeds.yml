@@ -1,0 +1,42 @@
+name: Generate blog embed pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'blog/posts.json'
+      - 'scripts/generate-blog-embeds.mjs'
+      - '.github/workflows/blog-embeds.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: blog-embeds
+  cancel-in-progress: true
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Generate per-post preview pages
+        run: node scripts/generate-blog-embeds.mjs
+
+      - name: Commit generated pages
+        run: |
+          if [ -n "$(git status --porcelain blog/posts)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add blog/posts
+            git commit -m "Generate blog embed pages"
+            git push
+          fi
