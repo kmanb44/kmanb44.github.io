@@ -19,8 +19,8 @@
             --border-color: #1e222b;
             --text-primary: #f3f4f6;
             --text-secondary: #9ca3af;
-            --cf-orange: #00e5ff;
-            --cf-orange-glow: rgba(0, 229, 255, 0.12);
+            --cf-cyan: #00e5ff;
+            --cf-cyan-glow: rgba(0, 229, 255, 0.12);
             --cf-gradient: linear-gradient(135deg, #00e5ff 0%, #0088ff 100%);
             --card-bg: #0d1017;
             --discord-color: #5865F2;
@@ -59,7 +59,7 @@
             pointer-events: none;
         }
 
-        /* Subtle Orange Glow in Hero */
+        /* Subtle Cyan Glow in Hero */
         .glow-effect {
             position: absolute;
             top: -150px;
@@ -67,7 +67,7 @@
             transform: translateX(-50%);
             width: 600px;
             height: 400px;
-            background: radial-gradient(circle, var(--cf-orange-glow) 0%, rgba(9, 11, 15, 0) 70%);
+            background: radial-gradient(circle, var(--cf-cyan-glow) 0%, rgba(9, 11, 15, 0) 70%);
             z-index: -1;
             pointer-events: none;
             filter: blur(50px);
@@ -123,11 +123,11 @@
         }
 
         nav a:hover {
-            color: var(--cf-orange);
+            color: var(--cf-cyan);
         }
 
         .btn-nav {
-            border: 1px solid var(--cf-orange);
+            border: 1px solid var(--cf-cyan);
             color: #fff;
             padding: 8px 18px;
             border-radius: 4px;
@@ -141,7 +141,7 @@
         .btn-nav:hover {
             background: var(--cf-gradient);
             border-color: transparent;
-            box-shadow: 0 4px 12px rgba(243, 128, 32, 0.25);
+            box-shadow: 0 4px 12px rgba(0, 229, 255, 0.25);
         }
 
         main {
@@ -154,30 +154,6 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
-        }
-
-        .hero-announcement {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(243, 128, 32, 0.08);
-            border: 1px solid rgba(243, 128, 32, 0.2);
-            border-radius: 9999px;
-            padding: 6px 16px;
-            color: var(--cf-orange);
-            font-size: 0.85rem;
-            font-weight: 500;
-            margin-bottom: 30px;
-        }
-
-        .hero-announcement span {
-            background: var(--cf-gradient);
-            color: #000;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            text-transform: uppercase;
         }
 
         h1 {
@@ -225,7 +201,7 @@
         }
 
         .btn-primary:hover {
-            box-shadow: 0 4px 15px rgba(243, 128, 32, 0.35);
+            box-shadow: 0 4px 15px rgba(0, 229, 255, 0.35);
             transform: translateY(-1px);
         }
 
@@ -276,7 +252,7 @@
 
         .feature-icon {
             font-size: 1.5rem;
-            color: var(--cf-orange);
+            color: var(--cf-cyan);
             margin-bottom: 20px;
             display: block;
         }
@@ -296,7 +272,7 @@
         }
 
         .feature-link {
-            color: var(--cf-orange);
+            color: var(--cf-cyan);
             text-decoration: none;
             font-size: 0.85rem;
             font-weight: 600;
@@ -401,7 +377,7 @@
 
         .status-activity {
             font-size: 0.8rem;
-            color: var(--cf-orange);
+            color: var(--cf-cyan);
             font-weight: 500;
             margin-top: 6px;
         }
@@ -420,8 +396,8 @@
         }
 
         .join-discord-btn:hover {
-            border-color: var(--cf-orange);
-            color: var(--cf-orange);
+            border-color: var(--cf-cyan);
+            color: var(--cf-cyan);
         }
 
         footer {
@@ -443,7 +419,7 @@
         }
 
         footer a:hover {
-            color: var(--cf-orange);
+            color: var(--cf-cyan);
         }
 
         @media (max-width: 900px) {
@@ -488,10 +464,6 @@
     </header>
 
     <main>
-        <div class="hero-announcement">
-            <span>Live Updates</span> Connected to Lanyard API
-        </div>
-
         <h1>Planes, edits, and <span>code</span>.</h1>
 
         <p class="hero-desc">Making War Thunder and Ace Combat videos, posting plane and anime edits, and building
@@ -513,7 +485,7 @@
                 <div class="status-header">
                     <span id="discord-name">kmanb</span>
                     <span
-                        style="font-size: 0.75rem; color: var(--cf-orange); font-weight: 500; border: 1px solid rgba(0, 229, 255, 0.3); padding: 1px 6px; border-radius: 2px;">LIVE</span>
+                        style="font-size: 0.75rem; color: var(--cf-cyan); font-weight: 500; border: 1px solid rgba(0, 229, 255, 0.3); padding: 1px 6px; border-radius: 2px;">LIVE</span>
                 </div>
                 <div id="discord-custom-status" class="status-text">Fetching presence details...</div>
                 <div id="discord-curr-activity" class="status-activity" style="display:none;"></div>
@@ -549,7 +521,7 @@
 
     <footer>
         <div>&copy; 2026 kmanb. All rights reserved.</div>
-        <div>Coded with 💙 by Gemini AI</div>
+        <div>Coded with 💙 by Gemini AI &amp; MiMo</div>
     </footer>
 
     <script>

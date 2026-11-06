@@ -4,21 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>kmanGPT - Admin Dashboard</title>
+    <!-- Google Fonts: Inter & Space Grotesk to match the main site -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
     <style>
         :root {
-            --bg-color: #0b0f19;
+            --bg-color: #090b0f;
+            --grid-line-color: rgba(0, 229, 255, 0.04);
             --text-color: #f3f4f6;
-            --border-color: #1f2937;
-            --highlight: #1e293b;
-            --link-color: #38bdf8;
-            --accent-color: #3b82f6;
+            --text-secondary: #9ca3af;
+            --border-color: #1e222b;
+            --highlight: #12161e;
+            --link-color: #00e5ff;
+            --accent-color: #00e5ff;
+            --accent-gradient: linear-gradient(135deg, #00e5ff 0%, #0088ff 100%);
             --danger-color: #ef4444;
             --success-color: #10b981;
-            --card-bg: #111827;
+            --card-bg: #0d1017;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
@@ -27,9 +37,27 @@
             margin-left: auto;
             margin-right: auto;
             line-height: 1.5;
+            position: relative;
+        }
+
+        /* Geometric grid background, matching index.html */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: -1;
+            pointer-events: none;
         }
 
         h1, h2, h3 {
+            font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 10px;
@@ -52,7 +80,7 @@
         }
         
         a:hover {
-            color: #7dd3fc;
+            color: #5cefff;
         }
 
         .tabs {
@@ -66,18 +94,18 @@
         .tab-btn {
             background: none;
             border: none;
-            color: #9ca3af;
+            color: var(--text-secondary);
             padding: 10px 20px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            border-radius: 6px;
+            border-radius: 4px;
             transition: all 0.2s;
         }
 
         .tab-btn.active {
-            background-color: var(--accent-color);
-            color: white;
+            background: var(--accent-gradient);
+            color: #051318;
         }
 
         .tab-btn:hover:not(.active) {
@@ -88,24 +116,49 @@
         .container {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
+            border-radius: 4px;
             padding: 24px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
 
-        input[type="text"], input[type="password"], textarea, select {
+        input[type="text"], input[type="password"], input[type="file"], textarea, select {
             display: block;
             width: 100%;
             padding: 10px 14px;
             margin-bottom: 15px;
             font-family: inherit;
-            background-color: #1f2937;
+            background-color: #10141c;
             border: 1px solid var(--border-color);
             color: #fff;
-            border-radius: 6px;
+            border-radius: 4px;
             box-sizing: border-box;
             font-size: 0.95rem;
             transition: border-color 0.2s;
+        }
+
+        input[type="file"]::file-selector-button {
+            background: #161a22;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            border-radius: 4px;
+            padding: 6px 12px;
+            margin-right: 12px;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        input[type="file"]::file-selector-button:hover {
+            border-color: var(--accent-color);
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
         }
 
         input:focus, textarea:focus {
@@ -119,7 +172,7 @@
         }
 
         button {
-            background-color: var(--accent-color);
+            background: var(--accent-gradient);
             border: none;
             color: #fff;
             padding: 10px 20px;
@@ -127,26 +180,30 @@
             font-weight: 600;
             font-size: 0.95rem;
             cursor: pointer;
-            border-radius: 6px;
-            transition: background-color 0.2s;
+            border-radius: 4px;
+            transition: filter 0.2s, box-shadow 0.2s, background-color 0.2s;
         }
 
         button:hover {
-            background-color: #2563eb;
+            filter: brightness(1.08);
+            box-shadow: 0 4px 12px rgba(0, 229, 255, 0.25);
         }
 
         button.btn-danger {
-            background-color: var(--danger-color);
+            background: var(--danger-color);
         }
         button.btn-danger:hover {
-            background-color: #dc2626;
+            background: #dc2626;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
         }
 
         button.btn-secondary {
-            background-color: #4b5563;
+            background: #161a22;
+            border: 1px solid var(--border-color);
         }
         button.btn-secondary:hover {
-            background-color: #374151;
+            background: #1d222c;
+            box-shadow: none;
         }
 
         .hidden {
@@ -165,7 +222,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-radius: 6px;
+            border-radius: 4px;
             margin-bottom: 4px;
         }
         
@@ -186,7 +243,7 @@
         .breadcrumbs {
             margin-bottom: 15px;
             font-weight: 600;
-            color: #9ca3af;
+            color: var(--text-secondary);
         }
 
         #upload-section {
@@ -197,7 +254,7 @@
 
         .disclaimer {
             font-size: 0.85em;
-            color: #9ca3af;
+            color: var(--text-secondary);
             margin-top: 20px;
             border-top: 1px dashed var(--border-color);
             padding-top: 15px;
@@ -212,10 +269,10 @@
         /* Blog post styles */
         .post-card {
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 4px;
             padding: 16px;
             margin-bottom: 12px;
-            background-color: #1f2937;
+            background-color: #12161e;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -229,7 +286,7 @@
 
         .post-meta {
             font-size: 0.85rem;
-            color: #9ca3af;
+            color: var(--text-secondary);
         }
 
         .post-actions {
@@ -248,22 +305,16 @@
     <div id="login-screen" class="container">
         <h2>Authentication</h2>
         <div id="login-error" class="error-message hidden"></div>
-        <p>Enter your GitHub credentials to manage files and blog posts.</p>
+        <p>Enter your GitHub token to manage files and blog posts. The repository (<strong>kmanb44/kmanb44.github.io</strong>) is preconfigured.</p>
         
         <label for="gh-token">Personal Access Token:</label>
         <input type="password" id="gh-token" placeholder="github_pat_..." autocomplete="off">
-        
-        <label for="gh-owner">Repository Owner:</label>
-        <input type="text" id="gh-owner" placeholder="kmanb44">
-        
-        <label for="gh-repo">Repository Name:</label>
-        <input type="text" id="gh-repo" placeholder="kmanb44.github.io">
         
         <button onclick="app.login()">Connect</button>
         
         <div class="disclaimer">
             <strong>SECURITY NOTE:</strong> Please use a <em>Fine-grained Personal Access Token</em> scoped only to "Contents: Read & Write" for this specific public repository. 
-            Credentials are saved in browser Session Storage and are cleared when the tab is closed.
+            Your token is saved in browser Session Storage and is cleared when the tab is closed.
         </div>
     </div>
 
@@ -275,7 +326,7 @@
 
         <!-- File Manager Tab -->
         <div id="tab-files-content" class="container">
-            <div id="repo-info" style="margin-bottom: 15px; color: #9ca3af;">Connected: <strong>Owner/Repo</strong></div>
+            <div id="repo-info" style="margin-bottom: 15px; color: var(--text-secondary);">Connected: <strong>Owner/Repo</strong></div>
             
             <div class="breadcrumbs" id="breadcrumbs">
                 <!-- Breadcrumbs injected here -->
@@ -305,7 +356,7 @@
             <div id="blog-status" style="margin-bottom: 15px; font-weight: 600;"></div>
 
             <!-- Blog Editor Form -->
-            <div id="blog-form-container" class="hidden" style="border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; margin-bottom: 20px; background-color: #182235;">
+            <div id="blog-form-container" class="hidden" style="border: 1px solid var(--border-color); padding: 20px; border-radius: 4px; margin-bottom: 20px; background-color: #12161e;">
                 <h3 id="form-title">Create Blog Post</h3>
                 <input type="hidden" id="post-id">
                 
@@ -338,6 +389,10 @@
     </div>
 
 <script>
+    // Repository is fixed for this site — only the token needs to be entered
+    const GH_OWNER = 'kmanb44';
+    const GH_REPO = 'kmanb44.github.io';
+
     const app = {
         state: {
             token: null,
@@ -349,13 +404,11 @@
 
         init: function() {
             const token = sessionStorage.getItem('gh_token');
-            const owner = sessionStorage.getItem('gh_owner');
-            const repo = sessionStorage.getItem('gh_repo');
 
-            if (token && owner && repo) {
+            if (token) {
                 this.state.token = token;
-                this.state.owner = owner;
-                this.state.repo = repo;
+                this.state.owner = GH_OWNER;
+                this.state.repo = GH_REPO;
                 this.showMainScreen();
                 this.fetchFiles('');
             }
@@ -363,21 +416,17 @@
 
         login: function() {
             const token = document.getElementById('gh-token').value.trim();
-            const owner = document.getElementById('gh-owner').value.trim();
-            const repo = document.getElementById('gh-repo').value.trim();
 
-            if (!token || !owner || !repo) {
-                this.showError('All fields are required.');
+            if (!token) {
+                this.showError('Please enter your GitHub Personal Access Token.');
                 return;
             }
 
             sessionStorage.setItem('gh_token', token);
-            sessionStorage.setItem('gh_owner', owner);
-            sessionStorage.setItem('gh_repo', repo);
 
             this.state.token = token;
-            this.state.owner = owner;
-            this.state.repo = repo;
+            this.state.owner = GH_OWNER;
+            this.state.repo = GH_REPO;
             
             this.showError(''); // Clear errors
             this.showMainScreen();
